@@ -14,11 +14,11 @@ class _MainScreenState extends State<MainScreen> {
 
   // Updated List of screens with actual content
   final List<Widget> _pages = [
-    HomeScreen(),
-    const SearchGridScreen(),  // New Search Content
-    const AddPostScreen(),    // New Add Post Content
-    const ReelsScreen(),      // New Reels Content
-    ProfileScreen(),
+    const HomeScreen(),          // Fixed: Added const
+    const SearchGridScreen(),
+    const AddPostScreen(),
+    const ReelsScreen(),
+    const ProfileScreen(),       // Fixed: Added const if ProfileScreen supports it
   ];
 
   @override
@@ -51,23 +51,50 @@ class _MainScreenState extends State<MainScreen> {
 // --- 1. SEARCH GRID SCREEN ---
 class SearchGridScreen extends StatelessWidget {
   const SearchGridScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Container(
           height: 40,
-          decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
-          child: const TextField(
-            decoration: InputDecoration(hintText: 'Search', prefixIcon: Icon(Icons.search), border: InputBorder.none),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: 'Search',
+              prefixIcon: Icon(Icons.search),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(vertical: 10),
+            ),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Search clicked')),
+              );
+            },
           ),
         ),
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, crossAxisSpacing: 2, mainAxisSpacing: 2),
+          crossAxisCount: 3,
+          crossAxisSpacing: 2,
+          mainAxisSpacing: 2,
+        ),
         itemCount: 30,
-        itemBuilder: (context, index) => Image.network("https://picsum.photos/id/${index + 50}/200", fit: BoxFit.cover),
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Image ${index + 1} clicked')),
+            );
+          },
+          child: Image.network(
+            "https://picsum.photos/id/${index + 50}/200",
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
@@ -76,15 +103,57 @@ class SearchGridScreen extends StatelessWidget {
 // --- 2. ADD POST SCREEN ---
 class AddPostScreen extends StatelessWidget {
   const AddPostScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("New Post"), actions: [TextButton(onPressed: () {}, child: const Text("Next"))]),
+      appBar: AppBar(
+        title: const Text("New Post"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Next clicked')),
+              );
+            },
+            child: const Text("Next"),
+          ),
+        ],
+      ),
       body: Column(
         children: [
-          Container(height: 300, color: Colors.grey[300], child: const Center(child: Icon(Icons.image, size: 100, color: Colors.grey))),
-          const ListTile(leading: Icon(Icons.location_on), title: Text("Add Location")),
-          const ListTile(leading: Icon(Icons.person_add), title: Text("Tag People")),
+          GestureDetector(
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Select image clicked')),
+              );
+            },
+            child: Container(
+              height: 300,
+              color: Colors.grey[300],
+              child: const Center(
+                child: Icon(Icons.image, size: 100, color: Colors.grey),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.location_on),
+            title: const Text("Add Location"),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Add location clicked')),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.person_add),
+            title: const Text("Tag People"),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Tag people clicked')),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -94,6 +163,7 @@ class AddPostScreen extends StatelessWidget {
 // --- 3. REELS SCREEN ---
 class ReelsScreen extends StatelessWidget {
   const ReelsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,17 +173,59 @@ class ReelsScreen extends StatelessWidget {
         itemCount: 5,
         itemBuilder: (context, index) => Stack(
           children: [
-            Center(child: Image.network("https://picsum.photos/id/${index + 10}/400/800", fit: BoxFit.cover, width: double.infinity, height: double.infinity)),
-            const Positioned(
-              bottom: 20, right: 10,
+            Center(
+              child: Image.network(
+                "https://picsum.photos/id/${index + 10}/400/800",
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+            Positioned(
+              bottom: 20,
+              right: 10,
               child: Column(
                 children: [
-                  Icon(Icons.favorite, color: Colors.white, size: 35), Text("12k", style: TextStyle(color: Colors.white)),
-                  SizedBox(height: 20),
-                  Icon(Icons.chat_bubble_outline, color: Colors.white, size: 35), Text("450", style: TextStyle(color: Colors.white)),
+                  IconButton(
+                    icon: const Icon(Icons.favorite, color: Colors.white, size: 35),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Reel liked'),
+                          duration: Duration(milliseconds: 500),
+                        ),
+                      );
+                    },
+                  ),
+                  const Text("12k", style: TextStyle(color: Colors.white)),
+                  const SizedBox(height: 20),
+                  IconButton(
+                    icon: const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 35),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Comments clicked'),
+                          duration: Duration(milliseconds: 500),
+                        ),
+                      );
+                    },
+                  ),
+                  const Text("450", style: TextStyle(color: Colors.white)),
+                  const SizedBox(height: 20),
+                  IconButton(
+                    icon: const Icon(Icons.send, color: Colors.white, size: 35),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Share clicked'),
+                          duration: Duration(milliseconds: 500),
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
